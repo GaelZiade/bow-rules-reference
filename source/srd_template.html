@@ -1,0 +1,207 @@
+<title>B:OW Rules Reference</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+/* Layout: fixed sidebar index + single reading column (web); cover, part pages, single column (print). */
+:root{
+  --bg:#ffffff; --fg:#17181f; --muted:#5c6070; --line:#dfe1e8; --panel:#f4f5f8;
+  --accent:#2f3a8f; --accent-soft:#e8eaf7; --advice:#9a5b12; --advice-bg:#fbf4ea; --note-bg:#eef1f6;
+  --font-head:'Bitter', Georgia, 'Times New Roman', serif;
+  --font-body:'Source Sans 3', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --measure:46rem; --side:17.5rem;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#14151b; --fg:#e7e8ee; --muted:#a2a6b4; --line:#2c2e39; --panel:#1c1d25;
+  --accent:#9aa6ff; --accent-soft:#232744; --advice:#e0a45a; --advice-bg:#251f17; --note-bg:#1d2130; color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#14151b; --fg:#e7e8ee; --muted:#a2a6b4; --line:#2c2e39; --panel:#1c1d25;
+  --accent:#9aa6ff; --accent-soft:#232744; --advice:#e0a45a; --advice-bg:#251f17; --note-bg:#1d2130; color-scheme:dark; }
+
+*{ box-sizing:border-box; }
+body{ background:var(--bg); color:var(--fg); font-family:var(--font-body); font-size:16.5px; line-height:1.6; margin:0; }
+a{ color:var(--accent); text-underline-offset:2px; }
+a:focus-visible, button:focus-visible{ outline:2px solid var(--accent); outline-offset:2px; }
+
+/* ---------- sidebar ---------- */
+.side{ position:fixed; top:0; bottom:0; left:0; width:var(--side); overflow-y:auto; background:var(--panel);
+  border-right:1px solid var(--line); padding:calc(env(safe-area-inset-top,0px) + 1.4rem) 1rem 2rem max(1rem, env(safe-area-inset-left,0px)); z-index:5; }
+.side .brand{ font-family:var(--font-head); font-weight:800; font-size:1.15rem; line-height:1.2; margin:0 0 .2rem; }
+.side .brand small{ display:block; font-family:var(--font-body); font-weight:600; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); margin-top:.3rem; }
+.side ul{ list-style:none; margin:0; padding:0; }
+.nav-part{ margin:1.1rem 0 .3rem; font-size:.7rem; font-weight:700; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); }
+.nav-ch > a{ display:flex; gap:.55rem; padding:.28rem .5rem; border-radius:6px; color:var(--fg); text-decoration:none; font-weight:600; font-size:.95rem; }
+.nav-ch > a:hover{ background:var(--accent-soft); }
+.nav-num{ color:var(--muted); font-variant-numeric:tabular-nums; min-width:1.2rem; }
+.nav-ch.active > a{ background:var(--accent-soft); color:var(--accent); }
+.nav-sub{ display:none; margin:.15rem 0 .4rem 1.75rem !important; border-left:1px solid var(--line); }
+.nav-ch.active .nav-sub{ display:block; }
+.nav-sub a{ display:block; padding:.14rem .6rem; font-size:.86rem; color:var(--muted); text-decoration:none; }
+.nav-sub a:hover, .nav-sub a.on{ color:var(--accent); }
+.menu-btn{ display:none; }
+
+/* ---------- main ---------- */
+main{ margin-left:var(--side); padding-block:2.2rem 5rem; padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px)); }
+.wrap{ max-width:var(--measure); margin:0 auto; }
+.web-head{ padding-bottom:1.6rem; border-bottom:1px solid var(--line); margin-bottom:1rem; }
+.web-head .eyebrow{ font-size:.75rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+.web-head h1{ font-family:var(--font-head); font-size:2.5rem; line-height:1.1; margin:.3rem 0 .6rem; text-wrap:balance; }
+.web-head p{ color:var(--muted); margin:.4rem 0; }
+.notice{ background:var(--note-bg); border-radius:8px; padding:.85rem 1rem; margin-top:1rem; font-size:.93rem; }
+.notice p{ color:var(--fg) !important; margin:.3rem 0 !important; }
+
+.part{ margin:3.5rem 0 0; padding-top:1.2rem; border-top:3px double var(--line); }
+.part-no{ font-size:.75rem; font-weight:700; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); }
+.part-title{ font-family:var(--font-head); font-size:1.15rem; margin:.15rem 0 0; color:var(--muted); font-weight:600; }
+
+.chapter{ padding-top:2.2rem; }
+.ch-head{ margin-bottom:1.2rem; }
+.ch-no{ font-size:.78rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--accent); }
+.ch-title{ font-family:var(--font-head); font-weight:800; font-size:2.2rem; line-height:1.1; margin:.2rem 0 .4rem; text-wrap:balance; }
+.ch-src{ font-size:.85rem; color:var(--muted); margin:0; }
+.ch-src a{ color:var(--muted); }
+
+h2,h3,h4{ font-family:var(--font-head); line-height:1.25; text-wrap:balance; scroll-margin-top:1rem; }
+h2{ font-size:1.5rem; font-weight:700; margin:2.4rem 0 .7rem; padding-bottom:.35rem; border-bottom:1px solid var(--line); }
+h3{ font-size:1.18rem; font-weight:700; margin:1.8rem 0 .5rem; }
+h4{ font-size:1rem; font-weight:700; margin:1.3rem 0 .4rem; color:var(--accent); }
+p{ margin:.55rem 0; }
+ul,ol{ margin:.5rem 0 .8rem; padding-left:1.35rem; }
+li{ margin:.22rem 0; }
+li > ul, li > ol{ margin:.2rem 0; }
+strong{ font-weight:700; }
+hr{ border:0; border-top:1px solid var(--line); margin:2.2rem 0; }
+em{ color:inherit; }
+
+.tbl{ overflow-x:auto; margin:.8rem 0 1.1rem; border:1px solid var(--line); border-radius:8px; }
+table{ border-collapse:collapse; width:100%; font-size:.9rem; font-variant-numeric:tabular-nums; }
+th,td{ text-align:left; vertical-align:top; padding:.45rem .65rem; border-bottom:1px solid var(--line); }
+th{ background:var(--panel); font-weight:700; white-space:nowrap; }
+tr:last-child td{ border-bottom:0; }
+td:first-child{ font-weight:600; }
+
+.note{ background:var(--note-bg); border-radius:8px; padding:.7rem 1rem; margin:1rem 0; }
+.note p:first-child{ margin-top:0; } .note p:last-child{ margin-bottom:0; }
+.advice{ background:var(--advice-bg); border-left:3px solid var(--advice); border-radius:0 8px 8px 0; padding:.65rem 1rem .7rem; margin:1.1rem 0; font-size:.95rem; }
+.advice-label{ font-size:.7rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; color:var(--advice); margin-bottom:.1rem; }
+.advice p{ margin:.25rem 0; }
+
+.print-only{ display:none; }
+
+@media (max-width: 960px){
+  .side{ transform:translateX(-100%); transition:transform .2s ease; width:min(85vw, 20rem); box-shadow:0 0 30px rgba(0,0,0,.25); }
+  .side.open{ transform:none; }
+  main{ margin-left:0; padding-top:4.2rem; }
+  .menu-btn{ display:flex; align-items:center; gap:.4rem; position:fixed; top:calc(env(safe-area-inset-top,0px) + .7rem); left:max(.7rem, env(safe-area-inset-left,0px)); z-index:6;
+    background:var(--panel); color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:.45rem .8rem; font:600 .9rem var(--font-body); cursor:pointer; }
+  .web-head h1{ font-size:2rem; } .ch-title{ font-size:1.8rem; }
+  body:not(.print)::before{ content:""; position:fixed; inset:0 0 auto; height:calc(env(safe-area-inset-top,0px) + 3.3rem); background:var(--bg); border-bottom:1px solid var(--line); z-index:4; }
+}
+@media (prefers-reduced-motion: reduce){ .side{ transition:none; } html{ scroll-behavior:auto; } }
+html{ scroll-behavior:smooth; }
+
+/* ---------- print (PDF) ---------- */
+@page{ size: Letter; margin: .75in .8in .8in .8in; }
+@page :first{ margin:0; }
+body.print{ font-size:10.5pt; line-height:1.45; }
+body.print .side, body.print .menu-btn, body.print .web-head{ display:none; }
+body.print main{ margin:0; padding:0; }
+body.print .wrap{ max-width:none; }
+body.print .print-only{ display:block; }
+body.print .cover{ height:11in; width:8.5in; display:flex; flex-direction:column; justify-content:center; padding:0 1in; page-break-after:always; background:var(--fg); color:var(--bg); }
+body.print .cover .eyebrow{ font-size:11pt; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:#aab3ff; }
+body.print .cover h1{ font-family:var(--font-head); font-size:44pt; line-height:1.05; margin:.15in 0 .2in; }
+body.print .cover p{ font-size:13pt; max-width:5.6in; color:#c9ccd8; }
+body.print .cover .meta{ margin-top:.6in; font-size:9.5pt; color:#9a9eb0; }
+body.print .front{ page-break-after:always; }
+body.print .front h2{ margin-top:0; }
+body.print .toc{ list-style:none; padding:0; }
+body.print .toc li{ display:flex; justify-content:space-between; gap:1rem; padding:3pt 0; border-bottom:1px dotted var(--line); }
+body.print .toc li a{ color:var(--fg); text-decoration:none; }
+body.print .toc li span{ display:inline-block; min-width:.4in; color:var(--muted); }
+body.print .toc .toc-part{ border:0; margin-top:10pt; font-weight:700; color:var(--accent); }
+body.print .toc em{ font-style:normal; color:var(--muted); font-variant-numeric:tabular-nums; }
+body.print .part{ page-break-before:always; page-break-after:always; height:8.6in; display:flex; flex-direction:column; justify-content:center; border:0; margin:0; padding:0; }
+body.print .part-no{ font-size:12pt; }
+body.print .part-title{ font-size:34pt; color:var(--fg); font-weight:800; }
+body.print .chapter{ page-break-before:always; padding-top:0; }
+body.print .ch-title{ font-size:26pt; }
+body.print h2{ font-size:15pt; margin:20pt 0 6pt; page-break-after:avoid; break-after:avoid; }
+body.print h3{ font-size:12.5pt; margin:14pt 0 4pt; page-break-after:avoid; break-after:avoid; }
+body.print h4{ font-size:11pt; page-break-after:avoid; break-after:avoid; }
+body.print .tbl{ overflow:visible; break-inside:auto; }
+body.print table{ font-size:8.8pt; }
+body.print tr, body.print .advice, body.print .note{ break-inside:avoid; }
+body.print th{ white-space:normal; }
+body.print a{ text-decoration:none; }
+</style>
+
+<button class="menu-btn" id="menuBtn" aria-controls="side" aria-expanded="false">☰ Contents</button>
+<nav class="side" id="side" aria-label="Contents">
+  <p class="brand">B:OW Rules Reference<small>Bleach: Online World</small></p>
+  <ul>
+{{NAV}}
+  </ul>
+</nav>
+
+<main>
+<div class="wrap">
+  <section class="print-only cover">
+    <div class="eyebrow">Bleach: Online World</div>
+    <h1>Rules Reference</h1>
+    <p>The site's mechanics, systems, and rules, reorganized into a single reference.</p>
+    <div class="meta">Unofficial community compilation of the rules threads on rpforumbleach.proboards.com · November 2026</div>
+  </section>
+
+  <header class="web-head">
+    <div class="eyebrow">Bleach: Online World</div>
+    <h1>Rules Reference</h1>
+    <p>The forum's mechanics, systems, and rules, reorganized into one reference.</p>
+    <div class="notice">
+      <p><b>Unofficial.</b> This reference was written from the forum's rules threads (Getting Started, Forum Mechanics, Miscellaneous Rules, and the Quick Reference). The rules are restated more directly, but no rule was added. Each chapter links to its source threads. <b>If anything here differs from the forum, the forum is authoritative.</b></p>
+      <p><b>Advice</b> boxes collect the guidance on building characters and roleplaying; everything else is rules. Application passwords and personal staff asides are left out.</p>
+    </div>
+  </header>
+
+  <section class="print-only front">
+    <h2>About This Reference</h2>
+    <p>This book restates the rules threads of <i>Bleach: Online World</i>, found in the boards <b>Introduction: Getting Started</b>, <b>Forum Mechanics: Character Creation</b>, <b>Forum Mechanics: Roleplaying</b>, and <b>Other Mechanics: Miscellaneous Rules</b>, plus the <b>Quick Reference</b> page. They are reorganized for clarity, with tables and short sections.</p>
+    <div class="notice">
+      <p><b>Written from the forum's text.</b> Every rule here comes from the original threads; nothing was added. Every number in the source threads was checked against this book. Where the forum contradicts itself or has an obvious typo, a note in italics says so.</p>
+      <p><b>Rules and advice.</b> The main text states rules and concepts. Guidance on building characters and roleplaying is set apart in <i>Advice</i> boxes.</p>
+      <p><b>Left out on purpose:</b> the application passwords (find them by reading the rules on the forum) and personal first-person asides from staff.</p>
+      <p><b>The forum is authoritative.</b> Rules change. If anything here differs from the live forum, the forum wins. Each chapter lists its source threads.</p>
+    </div>
+    <p>All rules are the work of the Bleach: Online World staff and members. This is an unofficial reading copy for the community, not affiliated with Bleach or its rights holders.</p>
+    <h2 style="margin-top:20pt">Contents</h2>
+    <ul class="toc">
+{{TOC}}
+    </ul>
+  </section>
+
+{{BODY}}
+</div>
+</main>
+
+<script>
+(function(){
+  var side=document.getElementById('side'), btn=document.getElementById('menuBtn');
+  btn.addEventListener('click',function(){ var o=side.classList.toggle('open'); btn.setAttribute('aria-expanded',o); });
+  side.addEventListener('click',function(e){ if(e.target.closest('a') && window.innerWidth<=960){ side.classList.remove('open'); btn.setAttribute('aria-expanded','false'); }});
+  var chapters=[].slice.call(document.querySelectorAll('section.chapter'));
+  var subs=[].slice.call(document.querySelectorAll('main h2[id]'));
+  function navFor(id){ return side.querySelector('a[href="#'+id+'"]'); }
+  function update(){
+    var y=window.scrollY+120, cur=null, curSub=null;
+    chapters.forEach(function(c){ if(c.offsetTop<=y) cur=c; });
+    subs.forEach(function(h){ if(h.offsetTop<=y) curSub=h; });
+    side.querySelectorAll('.nav-ch.active').forEach(function(li){ li.classList.remove('active'); });
+    side.querySelectorAll('.nav-sub a.on').forEach(function(a){ a.classList.remove('on'); });
+    if(cur){ var a=navFor(cur.id); if(a){ a.parentNode.classList.add('active'); } }
+    if(curSub){ var s=navFor(curSub.id); if(s) s.classList.add('on'); }
+  }
+  var t=null; window.addEventListener('scroll',function(){ if(t) return; t=setTimeout(function(){ t=null; update(); },80); },{passive:true});
+  update();
+})();
+</script>
